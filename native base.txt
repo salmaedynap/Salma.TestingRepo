@@ -1,0 +1,280 @@
+import React from 'react';
+import { StyleSheet, Text, View,Alert, Image,Link,TextInput, TouchableOpacity, Button} from 'react-native';
+import { Container, Header, Content, Icon ,Form, Item, Input, Label } from 'native-base';
+import RadioGroup from 'react-native-radio-buttons-group';
+import axios from 'axios';
+import { validationHelper } from '../helper/validationHelper.js';
+
+
+export class Home extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+
+      inputs: {
+        nama: {
+          type: 'nama',
+          value: ''
+        },
+        email: {
+          type: 'email',
+          value: ''
+        },
+        password: {
+          type: 'password',
+          value: ''
+        }
+      },
+       gambar: 'avatar.jpg',
+        jk: [
+          {
+            label: 'Laki-laki',
+            color: 'white',
+            size: 20,
+            value:'L',
+          },
+          {
+            label: 'Perempuan',
+            color: 'white',
+            size: 20,
+            value:'P',
+          },
+        ],
+        page : 2
+        
+    };
+
+    this.ChangePage = this.ChangePage.bind(this);
+    this.onPress = this.onPress.bind(this);
+    this.testFunction = this.testFunction.bind(this);
+
+    this.onInputChange = validationHelper.onInputChange.bind(this);
+	  this.isValidate = validationHelper.isValidate.bind(this);
+	  this.onSubmit = this.onSubmit.bind(this);
+  }
+
+    onSubmit() {
+    	console.log(this.state);
+    	this.isValidate();
+      }
+
+    onError(id) {
+    	const { inputs } = this.state;
+    	if (inputs[id].error) {
+    	  return <Text style={styles.errorLabel}>{inputs[id].error}</Text>;
+    	}
+    	return null;
+      }
+
+
+    ChangePage(){
+      this.setState({page: 1});
+    }
+
+    componentDidMount(){
+      if(this.props.data!=null){
+          this.setState(this.props.data);
+      }
+    }
+
+    testFunction(){
+      alert('test');
+    }
+
+
+    kirim(){
+      var url = 'http://192.168.100.101:3030/registration';
+      this.onSubmit();
+      axios.post(url, this.state.input).then(res=>{
+        if(res=="Success"){
+          this.setState({nama:'', jk:'',email:'' })
+        } 
+      })
+    
+    }
+
+onPress = jk => this.setState({ jk });
+
+render(){
+  var space = '';
+  if(this.state.page == 1){
+    let selectedButton = this.state.jk.find(e => e.selected == true);
+      selectedButton = selectedButton ? selectedButton.value : this.state.jk[0].label;
+    return (
+      <View style={styles.container}>
+          <Image 
+                style={{width: 50, height: 50}}
+                resizeMode="contain"
+                source={{ uri: 'https://raw.githubusercontent.com/github/explore/6c6508f34230f0ac0d49e847a326429eefbfc030/topics/react-native/react-native.png' }}
+          />
+          <Text style={styles.text}>Registrasi</Text>
+          <Text style={styles.header}>Silahkan input data anda dibawah ini</Text>
+        
+          <Text style={{alignSelf: 'flex-start',
+                    flexDirection: 'row',
+                    color:'white'}}>         Nama</Text>
+          <TextInput label='Nama' 
+                    style={styles.nama}
+                    placeholder="Nama anda.." 
+                    value={this.state.nama} 
+                    onChangeText={value => this.onInputChange({id: 'nama', value})}>
+          </TextInput>
+          {this.onError('nama')}
+          <Text style={{alignSelf: 'flex-start',
+                    flexDirection: 'row', 
+                    color:'white'}}>         Email</Text>
+          <TextInput label='Email' 
+                    style={styles.email} 
+                    placeholder="Email anda.." 
+                    value={this.state.email} 
+                    onChangeText={value => this.onInputChange({id: 'email', value})}>
+          </TextInput>
+          {this.onError('email')}
+          <Text style={{alignSelf: 'flex-start', 
+                    flexDirection: 'row', 
+                    color:'white'}}>         Password</Text>
+          <TextInput label='Password'
+                    secureTextEntry={true} 
+                    style={styles.password} 
+                    placeholder="Password anda.." 
+                    value={this.state.password} 
+                    onChangeText={value => this.onInputChange({id: 'password', value})}>
+          </TextInput>
+          {this.onError('password')}
+          <Text style={{alignSelf: 'flex-start', flexDirection: 'row', color:'white'}}>         Jenis-Kelamin</Text>
+              <View style={{alignSelf: 'flex-start', flexDirection: 'row'}} >
+                <Text style={{ color: "#6495ED" }}>vvii</Text><RadioGroup radioButtons={this.state.jk} onPress={this.onPress} />
+              </View>
+          <View style={styles.loginButton}>
+            <Button title="daftar" color="#4169E1" onPress={() => this.props.navigation.navigate('ListView')} />
+          </View>
+        
+      </View>
+    );
+    }else{
+      
+  return (
+    <>
+
+         
+          
+          <Container style={styles.container}>
+        <Content >
+        <Image 
+          style={{width: 50, height: 50, left: 170,top :100}}
+          resizeMode="contain"
+          source={{ uri: 'https://raw.githubusercontent.com/github/explore/6c6508f34230f0ac0d49e847a326429eefbfc030/topics/react-native/react-native.png' }}
+          />
+        <Text style={styles.text}>Log in</Text>
+          <Form>
+          <Item floatingLabel>
+              <Label>Email</Label>
+              <Input style={styles.email1} value={this.state.email} 
+                    onChangeText={value => this.onInputChange({id: 'email', value})} />
+            </Item>
+            <Item floatingLabel>
+              <Label>Password</Label>
+              <Input secureTextEntry={true} value={this.state.password} 
+                    onChangeText={value => this.onInputChange({id: 'password', value})}/>
+            </Item>
+            
+            
+          </Form>
+          
+        </Content>
+      </Container>
+      <Button title="Log in" color="#4169E1" onPress={() => this.props.navigation.navigate('ListView')} />      
+
+    
+    </>
+
+     );
+    }
+  }
+
+}
+export default Home;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#6495ED",
+  },
+  text:{
+    fontSize: 35,
+    fontWeight : 'bold',
+    color:'white',
+    paddingBottom: 80,  
+    left: 150,
+    top :100,
+    justifyContent:'center'
+  },
+  text2:{
+    fontSize: 15,
+    color:'black',
+    padding: 3,  
+  },
+  header:{
+    padding : 5,
+    fontStyle: "italic",
+    bottom:5,
+    color : 'lightgrey',
+  },
+  nama:{
+    backgroundColor:'white',
+    borderRadius: 5,
+    width:'85%',
+    padding: 3,
+    marginBottom: 5,
+    
+  },
+  email:{
+    backgroundColor:'white',
+    borderRadius: 5,
+    width:'85%',
+    padding: 3,
+    marginBottom: 6,
+  },
+  email1:{
+    borderRadius: 5,
+    width:'50%',
+    padding: 3,
+    marginBottom: 8,
+  },
+  password:{
+    backgroundColor:'white',
+    borderRadius: 5,
+    width:'85%',
+    padding: 5,
+    marginBottom: 5,
+  },
+  password1:{
+    backgroundColor:'white',
+    borderRadius: 5,
+    width:'85%',
+    padding: 3,
+    marginBottom: 5,
+  },
+  loginButton:{
+    width:'85%',
+    marginBottom: 10,
+    borderRadius:10,
+  },
+  loginButton1:{
+    width:'85%',
+    marginBottom: 10,
+    borderRadius:10,
+    marginTop:5,
+  },
+  button:{
+    color: "black",
+  },
+  radio:{
+    width: '90%',
+  },
+  errorLabel: {
+    color: "red",
+    fontSize: 10,
+  },
+  
+});

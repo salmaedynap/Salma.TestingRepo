@@ -1,0 +1,131 @@
+--Drawer--
+
+import React, { Component } from 'react';
+import { Container, Header, Title,List,Left, ListItem,Thumbnail, Content, Footer, FooterTab, Button, Right, Body, Icon,Text } from 'native-base';
+import { TabNavigator } from "react-navigation";
+import Login from './screens/Home.js';
+import ListView from './screens/ListView.js';
+
+const MainScreenNavigator = TabNavigator(
+  {
+    Home: { screen: Login },
+    ListView: { screen: ListView },
+  }
+)
+
+export class SideBar extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      nama: "Salma Edyna Putri",
+      email:"salma@gmail.com",
+      id:"gjh668j"
+    }
+  };
+  render() {
+    return (
+      <Container>
+        <Header>
+          <Body>
+            <Title>Hello</Title>
+          </Body>
+          <Right />
+        </Header>
+        <Content padder>
+        <List>
+            <ListItem avatar>
+              <Left>
+                <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/24/1d/db/241ddb998aaaf65e5785a37faefab82b.jpg' }} />
+              </Left>
+              <Body>
+                <Text>{this.state.nama}</Text>
+                <Text note>View Profile</Text>
+              </Body>
+            </ListItem>
+          
+                <ListItem
+                  button
+		  active={props.navigationState.index === 0}
+                  onPress={() => this.props.navigation.navigate('ListView')}>
+                  <Icon name="home" />
+                  <Text>  Home</Text>
+                </ListItem>
+                <ListItem
+                  button
+                  vertical
+              active={props.navigationState.index === 0}
+              onPress={() => this.props.navigation.navigate('Home')}>
+                  <Icon name="log-out" />
+                  <Text>  Log Out</Text>
+                </ListItem>
+                </List>
+        </Content>
+      </Container>
+    );
+  }
+}
+export default SideBar = TabNavigator(MainScreenNavigator);
+
+
+
+
+
+
+--Nav Drawer yg pake routes--
+import React, { Component } from 'react';
+import { DrawerNavigator } from "react-navigation";
+import { Container, Header, Title, List, Left, ListItem, Thumbnail, Content, Footer, FooterTab, Button, Right, Body, Icon,Text, Image } from 'native-base';
+
+const routes = ["Home", "LogOut"];
+
+export default class SideBar extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      nama: "Salma Edyna Putri",
+      
+    }
+  };
+
+  render() {
+    return (
+      <Container>
+        <Header>
+          <Body>
+            <Title>Hello</Title>
+          </Body>
+        </Header>
+        <Content padder>
+          <List>
+          <ListItem avatar>
+              <Left>
+                <Thumbnail source={{ uri: 'https://i.pinimg.com/originals/24/1d/db/241ddb998aaaf65e5785a37faefab82b.jpg' }} />
+              </Left>
+              <Body>
+                <Text>{this.state.nama}</Text>
+                <Text note>View Profile</Text>
+              </Body>
+            </ListItem>
+            <List
+            dataArray={routes}
+            renderRow={data => {
+              return (
+                <ListItem
+                  button
+                  onPress={() => this.props.navigation.navigate(data)}
+                >
+                  <Text>{data}</Text>
+                </ListItem>
+                
+              );
+            }}
+            />
+          </List>
+          
+           
+          
+        </Content>
+      </Container>
+    );
+  }
+}
